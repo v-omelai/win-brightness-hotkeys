@@ -1,0 +1,5 @@
+click==7.1.2
+keyboard==0.13.5
+pypiwin32==223
+pywin32==300
+WMI==1.5.1
