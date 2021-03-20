@@ -17,6 +17,7 @@ def brightness(action: str, step: int = 20):
         methods.WmiSetBrightness(new, 0)
 
 
-keyboard.add_hotkey('f10', brightness, args='-')
-keyboard.add_hotkey('f11', brightness, args='+')
-keyboard.wait()
+if __name__ == '__main__':
+    keyboard.add_hotkey('f10', brightness, args='-')
+    keyboard.add_hotkey('f11', brightness, args='+')
+    keyboard.wait()
