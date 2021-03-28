@@ -1,10 +1,16 @@
 @echo off
-python --version
-set "venv-create=python -m venv venv"
-set "venv-activate=call venv/Scripts/activate.bat"
-set "pip-upgrade=python -m pip install --upgrade pip"
-set "pip-install-reqs=pip install -r requirements.txt"
-if not exist venv %venv-create% && %venv-activate% && %pip-upgrade% && %pip-install-reqs%
-if exist venv %venv-activate%
-python background.py --command "%venv-activate% && pythonw main.py"
+call vars.bat
+%py-ver%
+%project-activate-or-init%
+rem Default values
+set "decrease=ALT+F10"
+set "increase=ALT+F11"
+set "step=20"
+rem Input values
+set /p "decrease=Hotkey to decrease brightness (-) [%decrease%]: "
+set /p "increase=Hotkey to increase brightness (+) [%increase%]: "
+set /p "step=Brightness step [%step%]: "
+rem Run in background
+set "command=%venv-activate% && pythonw main.py --decrease ""%decrease%"" --increase ""%increase%"" --step ""%step%"""
+pythonw background.py --command "%command%"
 pause
