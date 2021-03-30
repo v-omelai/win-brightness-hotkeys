@@ -19,27 +19,33 @@ def brightness(action: str, step: int):
         methods.WmiSetBrightness(new, 0)
 
 
-@click.command()
-@click.option('--decrease', default='ALT+F10', show_default=True,
-              prompt='Hotkey to decrease brightness (-)', help='Hotkey to decrease brightness (-)')
-@click.option('--increase', default='ALT+F11', show_default=True,
-              prompt='Hotkey to increase brightness (+)', help='Hotkey to increase brightness (+)')
-@click.option('--step', type=int, default=20, show_default=True,
-              prompt='Brightness step', help='Brightness step')
-def bind(decrease: str, increase: str, step: int, *args):
-    """
-    For more reference see:
-
-    WMI: https://docs.microsoft.com/windows/win32/wmicoreprov/
-
-    CLI: https://click.palletsprojects.com/en/7.x/options/
-
-    Hotkey: https://github.com/boppreh/keyboard#keyboard.add_hotkey
-    """
+def bind(decrease: str, increase: str, step: int):
     keyboard.add_hotkey(decrease, brightness, args=('-', step))
     keyboard.add_hotkey(increase, brightness, args=('+', step))
     keyboard.wait()
 
 
+def wrapper(callback=bind):
+    @click.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))  # Workaround for run.py
+    @click.option('--decrease', default='ALT+F10', show_default=True,
+                  prompt='Hotkey to decrease brightness (-)', help='Hotkey to decrease brightness (-)')
+    @click.option('--increase', default='ALT+F11', show_default=True,
+                  prompt='Hotkey to increase brightness (+)', help='Hotkey to increase brightness (+)')
+    @click.option('--step', type=int, default=20, show_default=True,
+                  prompt='Brightness step', help='Brightness step')
+    def cli(*args, **kwargs):
+        """
+        For more reference see:
+
+        WMI: https://docs.microsoft.com/windows/win32/wmicoreprov/
+
+        Hotkey: https://github.com/boppreh/keyboard#keyboard.add_hotkey
+
+        CLI: https://click.palletsprojects.com/en/7.x/options/
+        """
+        callback(*args, **kwargs)
+    cli()
+
+
 if __name__ == '__main__':
-    bind()
+    wrapper()
