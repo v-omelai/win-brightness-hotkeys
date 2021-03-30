@@ -52,14 +52,15 @@ class CMD:
 class Handler:
     def __init__(self, db_name: str = 'db.json', shortcut: bool = False, reset: bool = False):
         self.DB_ABSOLUTE_PATH = os.path.join(BASE_DIR, db_name)
+        self.SHORTCUT, self.RESET = shortcut, reset
         self.IS_EXISTS_BEFORE_LOAD = os.path.isfile(self.DB_ABSOLUTE_PATH)
         self.DB = TinyDB(self.DB_ABSOLUTE_PATH)
-        self.IS_CREATED = False if reset else all([self.IS_EXISTS_BEFORE_LOAD, self.DB.all()])
+        self.IS_CREATED = False if self.RESET else all([self.IS_EXISTS_BEFORE_LOAD, self.DB.all()])
 
-        if shortcut:
+        if self.SHORTCUT:
             CMD.create_or_update_shortcut()
 
-        if reset:
+        if self.RESET:
             self.DB.drop_tables()
 
         if self.IS_CREATED:
